@@ -7,6 +7,12 @@ const gallery = document.querySelector('.gallery');
 gallery.insertAdjacentHTML('beforeend', createMarkup(galleryItems));
 gallery.addEventListener("click", onClick);
 
+const galleryItemsList = document.querySelectorAll('.gallery__item');
+galleryItemsList.forEach((item) => {
+  item.style.listStyle = 'none';
+});
+
+
 function onClick(event) {
   event.preventDefault();
   if (event.target === event.currentTarget) {
