@@ -1,58 +1,65 @@
 // Add imports above this line
-// import { galleryItems } from './gallery-items';
+import { galleryItems } from './gallery-items';
+import SimpleLightbox from 'simplelightbox';
+import "simplelightbox/dist/simple-lightbox.min.css";
 
-import { galleryItems } from './gallery-items.js';
 
 const gallery = document.querySelector('.gallery');
-let activeLightbox = null;
+gallery.insertAdjacentHTML('beforeend', createMarkup(galleryItems));
+gallery.addEventListener("click", onClick);
 
-function renderGallery() {
-  const galleryHTML = galleryItems
+function onClick(event) {
+  event.preventDefault();
+  if (event.target === event.currentTarget) {
+    return
+  }
+  
+  const currentPhoto = event.target;
+  const originalPhoto = currentPhoto.dataset.source;
+  const descriptionPhoto = currentPhoto.alt;
+
+  const instance = SimpleLightbox.create(
+    `<div>
+      <img src="${originalPhoto}" alt="${descriptionPhoto}" />
+    </div>`,
+    {
+      onShow: (instance) => {window.addEventListener("keydown", onKeyPress);},
+   
+      onClose: (instance) => {window.removeEventListener("keydown", onKeyPress);},
+    }
+  );
+  instance.show();
+  
+  function onKeyPress(event) {
+    if (event.key === "Escape") {
+      instance.close();
+    }
+  }
+
+}
+
+function createMarkup(arr) {
+  return arr
     .map(
-      (item, index) => `
-        <li class="gallery__item">
-          <a class="gallery__link" href="${item.original}">
-            <img
-              class="gallery__image"
-              src="${item.preview}"
-              data-source="${item.original}"
-              alt="${item.description}"
-              data-index="${index}"
-            />
-          </a>
-        </li>
-      `
+      ({ preview, original, description }) => 
+      `<li class="gallery__item">
+  <a class="gallery__link" href="${original}">
+    <img
+      class="gallery__image"
+      src="${preview}"
+      data-source="${original}"
+      alt="${description}"
+    />
+  </a>
+</li>`
     )
-    .join('');
-  gallery.innerHTML = galleryHTML;
+    .join("");
 }
 
-renderGallery();
-
-gallery.addEventListener('click', (el) => {
-  el.preventDefault();
-  const target = el.target;
-  if (target.tagName === 'IMG') {
-    const index = Number(target.dataset.index);
-    const imageSrc = galleryItems[index].original;
-
-    const instance = basicLightbox.create(`
-      <img src="${imageSrc}" width="800" height="600">
-    `);
-
-    instance.show();
-
-    activeLightbox = instance;
-
-    document.addEventListener('keydown', onKeyPress);
-  }
-});
-
-function onKeyPress(el) {
-  if (el.key === 'Escape' && activeLightbox) {
-    activeLightbox.close();
-    document.removeEventListener('keydown', onKeyPress);
-  }
-}
+new SimpleLightbox('.gallery__item a', {
+    captionsData: 'alt',
+    captionDelay: 250,
+  });
+  
 console.log(galleryItems);
 
