@@ -23,7 +23,7 @@ function onClick(event) {
   const originalPhoto = currentPhoto.dataset.source;
   const descriptionPhoto = currentPhoto.alt;
 
-  const instance = SimpleLightbox.create(
+  const instance = new SimpleLightbox(
     `<div>
       <img src="${originalPhoto}" alt="${descriptionPhoto}" />
     </div>`,
@@ -35,8 +35,8 @@ function onClick(event) {
   );
   instance.show();
   
-  function onKeyPress(event) {
-    if (event.key === "Escape") {
+  function onKeyPress(el) {
+    if (el.key === "Escape") {
       instance.close();
     }
   }
