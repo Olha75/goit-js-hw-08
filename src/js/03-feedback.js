@@ -11,3 +11,13 @@ if(memoryInfo !==null){
     textarea.value=message;
 }
 
+form.addEventListener("submit", function (event){
+    event.preventDefault();
+    if(input.value===" "||textarea.value===" "){
+        alert ("Заповніть усі форми")
+    } else {const storage = LocalStorage.getItem("feedback-form-state");
+console.log(JSON.parse(storage));
+localStorage.removeItem("feedback-form-state")
+input.value=" "
+textarea.value=" "}
+}) 
