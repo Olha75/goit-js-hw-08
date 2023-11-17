@@ -7,11 +7,12 @@ const player = new Player(iframe);
 
 const storedTime = localStorage.getItem(LOCALSTORAGE_KEY);
 if (storedTime) {
-  player.setCurrentTime(parseFloat(storedTime));
+  player.setCurrentTime(parseFloat(storedTime)).then(()=>{
+    player.play();
+  });
 }
 player.on('timeupdate', throttle((event) => {
   const currentTime = event.seconds;
   localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(currentTime));
 }, 1000));
 
-player.play();
